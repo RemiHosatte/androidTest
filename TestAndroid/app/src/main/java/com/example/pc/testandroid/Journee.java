@@ -5,6 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by PC on 03/02/2017.
@@ -20,10 +24,14 @@ public class Journee {
 
             */
     //VARIABLES
-    private static final int VERSION_BDD = 1;
-    private static final String NOM_BDD = "stade.db";
-    int id;
-    int numero;
+    private int id;
+    private int numero;
+    private String TABLE_NAME = "journee";
+    private String ATTR_ID = "id";
+    private String ATTR_NUMERO = "numero";
+
+    private SQLiteDatabase bdd;
+    private MyBaseSQLite maBaseSQLite;
 
     //CONSTRUCTEUR
     public Journee(int numero) {
@@ -39,7 +47,7 @@ public class Journee {
     }
 
 
-    // GET SETTERS
+        // GET SETTERS
     public int getId() {
         return id;
     }
@@ -56,39 +64,79 @@ public class Journee {
         this.numero = numero;
     }
 
+    //METHODES
+    public Journee(Context context){
 
-/*
-
-
-    public void create(Journee jr) {
-
-        String req = "INSERT INTO journee(numero) values (" + this.numero + ");";
-        System.out.println("Req insert Journée: " + req);
-
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("numero", jr.getNumero());
-        baseSQLite.insert("journee", null, contentValues);
-
-
+        maBaseSQLite = new MyBaseSQLite(context);
     }
 
-    public Journee getJournee(int id) {
-        // Retourne l'animal dont l'id est passé en paramètre
+    public void open(){
 
-        Journee jr = new Journee(0, 0);
-
-        Cursor c = database.rawQuery("SELECT * FROM journee WHERE numero=" + id, null);
-        if (c.moveToFirst()) {
-            jr.setId(c.getInt(c.getColumnIndex("id")));
-            jr.setNumero(c.getInt(c.getColumnIndex("numero")));
-            c.close();
-        }
-        return jr;
-
+        bdd = maBaseSQLite.getWritableDatabase();
     }
-    public Cursor getAllJournee()
+
+    public void close(){
+
+        bdd.close();
+    }
+
+    public SQLiteDatabase getBDD(){
+        return bdd;
+    }
+
+    //INSERT
+    public long insertJournee(Journee jr){
+
+        ContentValues values = new ContentValues();
+        values.put(ATTR_NUMERO, jr.getNumero());
+
+        return bdd.insert(TABLE_NAME, null, values);
+    }
+    //UPDATE
+    public int updateJournee(int id, Journee jr){
+
+        ContentValues values = new ContentValues();
+        values.put(ATTR_NUMERO, jr.getNumero());
+        return bdd.update(TABLE_NAME, values, ATTR_ID + " = " +id, null);
+    }
+    //DELETE
+    public int deleteJournee(int id)
     {
-    return database.rawQuery("SELECT * FROM journee", null);
-    }*/
+        return bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
+
+    }
+
+    //RETRIEVE WITH ID
+    public Journee retrieve(int id)
+    {
+
+        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO},ATTR_ID + "= ",new String[]{String.valueOf(id)},null,null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Journee journee = new Journee(cursor.getInt(1), cursor.getInt(2));
+
+        return  journee;
+
+    }
+    //FIND ALL
+    public List<Journee> getAllJournee()
+    {
+        List<Journee> listJournee = new ArrayList<Journee>();
+
+        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO}, null, null, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Journee jr = new Journee();
+                jr.setId(cursor.getInt(0));
+                jr.setNumero(cursor.getInt(1));
+                listJournee.add(jr);
+
+            } while (cursor.moveToNext());
+        }
+
+        return listJournee;
+    }
+
 }

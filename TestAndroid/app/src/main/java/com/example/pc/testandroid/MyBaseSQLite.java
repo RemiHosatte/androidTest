@@ -13,7 +13,7 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
 
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "STADEDB";
@@ -42,7 +42,7 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
             "equipeVis INTEGER NOT NULL," +
             "scoreDom INTEGER NULL," +
             "scoreVis INTEGER NULL," +
-            "datetime NUMERIC NULL," +
+            "datetime TEXT NULL," +
             "arbitre TEXT NULL," +
             "idjournee INTEGER NULL," +
             "FOREIGN KEY (idjournee) REFERENCES journee(id)," +
