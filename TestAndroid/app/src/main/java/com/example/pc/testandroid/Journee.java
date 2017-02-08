@@ -110,11 +110,11 @@ public class Journee {
     public Journee retrieve(int id)
     {
 
-        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO},ATTR_ID + "= ",new String[]{String.valueOf(id)},null,null, null, null);
+        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO},ATTR_ID + "= "+ id,null,null,null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
-        Journee journee = new Journee(cursor.getInt(1), cursor.getInt(2));
+        Journee journee = new Journee(cursor.getInt(0), cursor.getInt(1));
 
         return  journee;
 

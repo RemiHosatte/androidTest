@@ -23,32 +23,41 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Création d'une instance de ma classe LivresBDD
-        //Journee myJournee = new Journee(this);
-//        Equipe myEquipe = new Equipe(this);
-        Matchs myMatch = new Matchs(this);
-
-        Journee jr = new Journee(numero);
+        Equipe monEquipe = new Equipe(this);
+        monEquipe.open();
         Equipe eq = new Equipe("ASM", "/logo/asm.jpg", "Mme Chassat", 45,5, "Terrain 1");
-        Matchs ma = new Matchs()
-        myEquipe.open();
-        //On insère le livre que l'on vient de créer
-        myEquipe.insertEquipe(eq);
-        System.out.println("INSERT FAIT");
+        monEquipe.insertEquipe(eq);
+        String id = monEquipe.retrieveEquipe(1).getEntraineur();
+        System.out.println(id);
+        monEquipe.close();
+
+//
+        Matchs monMatchs = new Matchs(this);
+        Journee maJournee = new Journee(this);
+        monEquipe.open();
+        monMatchs.open();
+        maJournee.open();
+        int EquipeRecup1 = 1 ;
+        int EquipeRecup2 = 2 ;
+        int JourneeRecup = 1;
+        Journee jour = new Journee(10);
+        maJournee.insertJournee();
+        Equipe eq1 = monEquipe.retrieveEquipe(EquipeRecup1);
+        Equipe eq2 = monEquipe.retrieveEquipe(EquipeRecup2);
+        Journee jr = maJournee.retrieve(JourneeRecup);
+
+        Matchs ma = new Matchs(eq1,eq2,15,15,"02/05/2017","Jo",jr);
+        monMatchs.insertMatch(ma);
+
 
         Log.d("Reading: ", "Reading all ..");
-        List<Equipe> equipes = myEquipe.getAllEquipe();
+        List<Journee> lesJours = maJournee.getAllJournee();
 
-        for (Equipe equipe : equipes) {
-            String log = "Id: "+equipe.getId()+" ,Numero: " + equipe.getNom();
+       for (Journee leJour : lesJours) {
+            String log = "Id: "+leJour.getId()+" ,Date: " + leJour.getNumero();
             // Writing Contacts to log
             Log.d("List: ", log);
-        }/*
-        System.out.println("Delete id 15");
-        myJournee.deleteJournee(15);
-        myJournee.deleteJournee(14);
-        myJournee.deleteJournee(16);
-        System.out.println("Delete fin");*/
-        myEquipe.close();
+        }
+      // monMatchs.insertMatch(ma);
     }
 }

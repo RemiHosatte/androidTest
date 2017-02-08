@@ -48,7 +48,7 @@ public class Matchs {
         private String ATTR_EQUIPEVIS = "equipeVis";
         private String ATTR_SCOREDOM = "scoreDom";
         private String ATTR_SCOREVIS = "scoreVis";
-        private String ATTR_DATETIME = "datatime";
+        private String ATTR_DATETIME = "datetime";
         private String ATTR_ARBITRE = "arbitre";
         private String ATTR_IDJOURNEE = "idjournee";
 
@@ -156,7 +156,7 @@ public class Matchs {
         return idjournee;
     }
 
-    public void setIdjournee(int idjournee) {
+    public void setIdjournee(Journee idjournee) {
         this.idjournee = idjournee;
     }
 
@@ -203,13 +203,13 @@ public class Matchs {
         public int updateMatch(int id, Matchs ma){
             Journee jr = new Journee();
             ContentValues values = new ContentValues();
-            values.put(ATTR_EQUIPEDOM, ma.getEquipeDom());
-            values.put(ATTR_EQUIPEVIS, ma.getEquipeVis());
+            values.put(ATTR_EQUIPEDOM, this.equipeDom.getId());
+            values.put(ATTR_EQUIPEVIS, this.equipeVis.getId());
             values.put(ATTR_SCOREDOM, ma.getScoreDom());
             values.put(ATTR_SCOREVIS, ma.getScoreVis());
             values.put(ATTR_DATETIME, ma.getDatetime());
             values.put(ATTR_ARBITRE, ma.getArbitre());
-            values.put(ATTR_IDJOURNEE, jr.getId());
+            values.put(ATTR_IDJOURNEE, this.idjournee.getId());
             return bdd.update(TABLE_NAME, values, ATTR_ID + " = " +id, null);
         }
         //DELETE
@@ -223,51 +223,69 @@ public class Matchs {
         public Matchs retrieveMatch(int id)
         {
 
-            Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= ",new String[]{String.valueOf(id)},null,null, null, null);
+            Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= ",
+                    new String[]{String.valueOf(id)},null,null, null, null);
             if (cursor != null)
                 cursor.moveToFirst();
+            Equipe eq1 = new Equipe();
+            Equipe eq2 = new Equipe();
             Journee jr = new Journee();
-            jr.retrieve(cursor.getInt(7));
-
+            jr.retrieve(cursor.getInt(1));
+            eq1.retrieveEquipe(cursor.getInt(1));
+            eq2.retrieveEquipe(cursor.getInt(2));
             Matchs ma = new Matchs(
                     cursor.getInt(0),
-                    cursor.getInt(1),
-                    cursor.getInt(2),
+                    eq1,
+                    eq2,
                     cursor.getInt(3),
                     cursor.getInt(4),
                     cursor.getString(5),
                     cursor.getString(6),
-                    jr.retrieve(cursor.getInt(7)));
+                    jr
+            );
 
 
             return  ma;
 
         }
         //FIND ALL
-        public List<Matchs> getAllEquipe()
+        public List<Matchs> getAllMatchs()
         {
-            List<com.example.pc.testandroid.Equipe> listEquipe = new ArrayList<com.example.pc.testandroid.Equipe>();
+            List<Matchs> listMatchs = new ArrayList<Matchs>();
 
             Cursor cursor = bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
 
             if (cursor.moveToFirst()) {
                 do {
-                    com.example.pc.testandroid.Equipe eq = new com.example.pc.testandroid.Equipe();
-                    eq.setId(cursor.getInt(0));
-                    eq.setNom(cursor.getString(1));
-                    eq.setLogo(cursor.getString(2));
-                    eq.setEntraineur(cursor.getString(3));
-                    eq.setNbDePoints(cursor.getInt(4));
-                    eq.setPointsBonus(cursor.getInt(5));
-                    eq.setNomTerrainDomicile(cursor.getString(6));
+                    System.out.println(cursor.getInt(0));
+                   Matchs maFindAll = new Matchs();
+                   /*  Equipe eq1 = new Equipe();
+                    Equipe eq2 = new Equipe();
+                    Journee jr = new Journee();
 
 
-                    listEquipe.add(eq);
+                    maFindAll.setEquipeDom(eq1);
+                    maFindAll.setEquipeVis(eq2);
+                    maFindAll.setIdjournee(jr);
+
+
+                    maFindAll.setEquipeDom(eq1.retrieveEquipe(cursor.getInt(1)));
+                    maFindAll.setEquipeVis(eq2.retrieveEquipe(cursor.getInt(2)));
+                    maFindAll.setScoreDom(cursor.getInt(3));
+                    maFindAll.setScoreVis(cursor.getInt(4));
+                    maFindAll.setDatetime(cursor.getString(5));
+
+                    jr.retrieve(cursor.getInt(7));*/
+                    maFindAll.setId(cursor.getInt(0));
+                    maFindAll.setId(cursor.getInt(1));
+                    maFindAll.setArbitre(cursor.getString(6));
+
+                    listMatchs.add(maFindAll);
 
                 } while (cursor.moveToNext());
             }
 
-            return listEquipe;
+            return listMatchs;
         }
 
 

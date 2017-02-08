@@ -105,11 +105,11 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_JOURNEE);
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_EQUIPE);
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_MATCH);
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_JOUEUR);
-        db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_COMPOSITION);
+        db.execSQL("DROP TABLE IF EXISTS " + "composition");
+        db.execSQL("DROP TABLE IF EXISTS " + "joueur");
+        db.execSQL("DROP TABLE IF EXISTS " + "matchs");
+        db.execSQL("DROP TABLE IF EXISTS " + "equipe");
+        db.execSQL("DROP TABLE IF EXISTS " + "journee");
 
         onCreate(db);
     }

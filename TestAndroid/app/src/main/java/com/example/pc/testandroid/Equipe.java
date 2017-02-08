@@ -200,7 +200,7 @@ public class Equipe {
     public Equipe retrieveEquipe(int id)
     {
 
-        Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= ",new String[]{String.valueOf(id)},null,null, null, null);
+        Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= "+ id,null,null,null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
 
@@ -212,7 +212,6 @@ public class Equipe {
                 cursor.getInt(4),
                 cursor.getInt(5),
                 cursor.getString(6));
-
         return  eq;
 
     }
