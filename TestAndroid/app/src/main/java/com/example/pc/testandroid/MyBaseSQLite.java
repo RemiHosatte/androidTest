@@ -60,7 +60,7 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
             "FOREIGN KEY (equipeID) REFERENCES equipe(id)" +
             ");";
 
-    private static final String CREATE_TABLE_COMPOSITION = "CREATE TABLE composition\n" +
+    private static final String CREATE_TABLE_COMPOSITION = "CREATE TABLE composition " +
             "(" +
             "idmatch INTEGER NOT NULL," +
             "idjoueur INTEGER NOT NULL," +

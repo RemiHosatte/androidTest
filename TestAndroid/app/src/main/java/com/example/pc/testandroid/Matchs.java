@@ -155,8 +155,6 @@ public class Matchs {
 
 
             ContentValues values = new ContentValues();
-            System.out.println("Crea" + ma.getEquipeDom().getId());
-            System.out.println("Crea" + ma.getEquipeVis().getId());
             values.put(ATTR_EQUIPEDOM, ma.getEquipeDom().getId());
             values.put(ATTR_EQUIPEVIS, ma.getEquipeVis().getId());
             values.put(ATTR_SCOREDOM, ma.getScoreDom());
