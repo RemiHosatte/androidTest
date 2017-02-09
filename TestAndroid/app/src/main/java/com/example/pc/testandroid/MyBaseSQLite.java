@@ -13,7 +13,7 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
 
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "STADEDB";
@@ -70,22 +70,6 @@ public class MyBaseSQLite  extends SQLiteOpenHelper {
             "FOREIGN KEY (idmatch) REFERENCES matchs(id)," +
             "FOREIGN KEY (idjoueur) REFERENCES joueur(id)" +
             ");";
-    private static MyBaseSQLite mInstance = null;
-    private Context mCxt;
-
-    public static MyBaseSQLite getInstance(Context ctx) {
-        /**
-         * use the application context as suggested by CommonsWare.
-         * this will ensure that you dont accidentally leak an Activitys
-         * context (see this article for more information:
-         * http://android-developers.blogspot.nl/2009/01/avoiding-memory-leaks.html)
-         */
-        if (mInstance == null) {
-            mInstance = new MyBaseSQLite(ctx.getApplicationContext());
-        }
-        return mInstance;
-    }
-
 
 
     public MyBaseSQLite(Context context) {

@@ -30,13 +30,9 @@ public class Journee {
     private String ATTR_ID = "id";
     private String ATTR_NUMERO = "numero";
 
-    private SQLiteDatabase bdd;
-    private MyBaseSQLite maBaseSQLite;
 
     //CONSTRUCTEUR
-    public Journee(int numero) {
-        this.numero = numero;
-    }
+
 
     public Journee(int id, int numero) {
         this.id = id;
@@ -64,67 +60,45 @@ public class Journee {
         this.numero = numero;
     }
 
-    //METHODES
-    public Journee(Context context){
-
-        maBaseSQLite = new MyBaseSQLite(context);
-    }
-
-    public void open(){
-
-        bdd = maBaseSQLite.getWritableDatabase();
-    }
-
-    public void close(){
-
-        bdd.close();
-    }
-
-    public SQLiteDatabase getBDD(){
-        return bdd;
-    }
-
     //INSERT
     public long insertJournee(Journee jr){
 
         ContentValues values = new ContentValues();
         values.put(ATTR_NUMERO, jr.getNumero());
 
-        return bdd.insert(TABLE_NAME, null, values);
+        return Global.bdd.insert(TABLE_NAME, null, values);
     }
     //UPDATE
-    public int updateJournee(int id, Journee jr){
+    public int updateJournee(Journee jr){
 
         ContentValues values = new ContentValues();
         values.put(ATTR_NUMERO, jr.getNumero());
-        return bdd.update(TABLE_NAME, values, ATTR_ID + " = " +id, null);
+        return  Global.bdd.update(TABLE_NAME, values, ATTR_ID + " = " + jr.getId(), null);
     }
     //DELETE
     public int deleteJournee(int id)
     {
-        return bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
+        return  Global.bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
 
     }
 
     //RETRIEVE WITH ID
-    public Journee retrieve(int id)
+    public void retrieve(int id)
     {
 
-        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO},ATTR_ID + "= "+ id,null,null,null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
+        Cursor cursor =  Global.bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO},ATTR_ID + " = "+ id,null,null,null, null, null);
 
-        Journee journee = new Journee(cursor.getInt(0), cursor.getInt(1));
+            cursor.moveToNext();
 
-        return  journee;
-
+        this.id = cursor.getInt(0);
+        this.numero = cursor.getInt(1);
     }
     //FIND ALL
     public List<Journee> getAllJournee()
     {
         List<Journee> listJournee = new ArrayList<Journee>();
 
-        Cursor cursor = bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO}, null, null, null, null, null);
+        Cursor cursor =  Global.bdd.query(TABLE_NAME, new String[] {ATTR_ID,ATTR_NUMERO}, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {

@@ -45,8 +45,6 @@ public class Equipe {
     private String ATTR_POINTSBONUS = "pointsBonus";
     private String ATTR_NOMTERRAINDOMICILE = "nomTerrainDomicile";
 
-    private SQLiteDatabase bdd;
-    private MyBaseSQLite maBaseSQLite;
 
     private  String[] attributs =
             {       ATTR_ID,
@@ -67,14 +65,7 @@ public class Equipe {
         this.pointsBonus = pointsBonus;
         this.nomTerrainDomicile = nomTerrainDomicile;
     }
-    public Equipe( String nom, String logo, String entraineur, int nbDePoints, int pointsBonus, String nomTerrainDomicile) {
-        this.nom = nom;
-        this.logo = logo;
-        this.entraineur = entraineur;
-        this.nbDePoints = nbDePoints;
-        this.pointsBonus = pointsBonus;
-        this.nomTerrainDomicile = nomTerrainDomicile;
-    }
+
     public Equipe()
     {
 
@@ -141,25 +132,6 @@ public class Equipe {
     }
 
 
-    //METHODES
-    public Equipe(Context context){
-
-        maBaseSQLite = new MyBaseSQLite(context);
-    }
-
-    public void open(){
-
-        bdd = maBaseSQLite.getWritableDatabase();
-    }
-
-    public void close(){
-
-        bdd.close();
-    }
-
-    public SQLiteDatabase getBDD(){
-        return bdd;
-    }
 
     //INSERT
     public long insertEquipe(Equipe eq){
@@ -172,13 +144,12 @@ public class Equipe {
         values.put(ATTR_POINTSBONUS, eq.getPointsBonus());
         values.put(ATTR_NOMTERRAINDOMICILE, eq.getNomTerrainDomicile());
 
-        return bdd.insert(TABLE_NAME, null, values);
+        return Global.bdd.insert(TABLE_NAME, null, values);
     }
 
 
-
     //UPDATE
-    public int updateEquipe(int id, Equipe eq){
+    public int updateEquipe(Equipe eq){
 
         ContentValues values = new ContentValues();
         values.put(ATTR_NOM, eq.getNom());
@@ -187,40 +158,40 @@ public class Equipe {
         values.put(ATTR_NBDEPOINTS, eq.getNbDePoints());
         values.put(ATTR_POINTSBONUS, eq.getPointsBonus());
         values.put(ATTR_NOMTERRAINDOMICILE, eq.getNomTerrainDomicile());
-        return bdd.update(TABLE_NAME, values, ATTR_ID + " = " +id, null);
+        return Global.bdd.update(TABLE_NAME, values, ATTR_ID + " = " +eq.getId(), null);
     }
+
     //DELETE
     public int deleteEquipe(int id)
     {
-        return bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
+        return Global.bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
 
     }
 
     //RETRIEVE WITH ID
-    public Equipe retrieveEquipe(int id)
+    public void retrieveEquipe(int id)
     {
 
-        Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= "+ id,null,null,null, null, null);
-        if (cursor != null)
-            cursor.moveToFirst();
+        Cursor cursor = Global.bdd.query(TABLE_NAME,attributs,ATTR_ID + " = "+ id,null,null,null, null, null);
+        cursor.moveToNext();
 
-        Equipe eq = new Equipe(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getInt(4),
-                cursor.getInt(5),
-                cursor.getString(6));
-        return  eq;
+                this.id     =   cursor.getInt(0);
+                this.nom    =   cursor.getString(1);
+                this.logo   =   cursor.getString(2);
+                this.entraineur = cursor.getString(3);
+                this.nbDePoints = cursor.getInt(4);
+                this.pointsBonus =  cursor.getInt(5);
+                this.nomTerrainDomicile  =  cursor.getString(6);
 
     }
+
+
     //FIND ALL
     public List<Equipe> getAllEquipe()
     {
         List<Equipe> listEquipe = new ArrayList<Equipe>();
 
-        Cursor cursor = bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
+        Cursor cursor = Global.bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
 
         if (cursor.moveToFirst()) {
             do {

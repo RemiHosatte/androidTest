@@ -34,8 +34,8 @@ public class Matchs {
                 */
         //VARIABLES
         private int id;
-        private Equipe equipeDom;
-        private Equipe equipeVis;
+        private Equipe equipeDom = new Equipe();
+        private Equipe equipeVis = new Equipe();
         private int scoreDom;
         private int scoreVis;
         private String datetime;
@@ -52,8 +52,6 @@ public class Matchs {
         private String ATTR_ARBITRE = "arbitre";
         private String ATTR_IDJOURNEE = "idjournee";
 
-        private SQLiteDatabase bdd;
-        private MyBaseSQLite maBaseSQLite;
 
         private  String[] attributs =
                 {       ATTR_ID,
@@ -79,15 +77,6 @@ public class Matchs {
         this.idjournee = idjournee;
     }
 
-  public Matchs(Equipe equipeDom, Equipe equipeVis, int scoreDom, int scoreVis, String datetime, String arbitre, Journee idjournee) {
-        this.equipeDom = equipeDom;
-        this.equipeVis = equipeVis;
-        this.scoreDom = scoreDom;
-        this.scoreVis = scoreVis;
-        this.datetime = datetime;
-        this.arbitre = arbitre;
-        this.idjournee = idjournee;
-    }
     public Matchs()
         {
 
@@ -160,134 +149,105 @@ public class Matchs {
         this.idjournee = idjournee;
     }
 
-    //METHODES
-        public Matchs(Context context){
-
-            maBaseSQLite = new MyBaseSQLite(context);
-        }
-
-        public void open(){
-
-            bdd = maBaseSQLite.getWritableDatabase();
-        }
-
-        public void close(){
-
-            bdd.close();
-        }
-
-        public SQLiteDatabase getBDD(){
-            return bdd;
-        }
 
         //INSERT
         public long insertMatch(Matchs ma){
 
-            Journee jr = new Journee();
-            Equipe eq = new Equipe();
+
             ContentValues values = new ContentValues();
-            values.put(ATTR_EQUIPEDOM, eq.getId());
-            values.put(ATTR_EQUIPEVIS, eq.getId());
+            System.out.println("Crea" + ma.getEquipeDom().getId());
+            System.out.println("Crea" + ma.getEquipeVis().getId());
+            values.put(ATTR_EQUIPEDOM, ma.getEquipeDom().getId());
+            values.put(ATTR_EQUIPEVIS, ma.getEquipeVis().getId());
             values.put(ATTR_SCOREDOM, ma.getScoreDom());
             values.put(ATTR_SCOREVIS, ma.getScoreVis());
             values.put(ATTR_DATETIME, ma.getDatetime());
             values.put(ATTR_ARBITRE, ma.getArbitre());
-            values.put(ATTR_IDJOURNEE, jr.getId());
+            values.put(ATTR_IDJOURNEE, ma.getIdjournee().getId());
 
-            return bdd.insert(TABLE_NAME, null, values);
+
+            return Global.bdd.insert(TABLE_NAME, null, values);
         }
 
 
 
         //UPDATE
-        public int updateMatch(int id, Matchs ma){
-            Journee jr = new Journee();
+        public int updateMatch(Matchs ma){
             ContentValues values = new ContentValues();
-            values.put(ATTR_EQUIPEDOM, this.equipeDom.getId());
-            values.put(ATTR_EQUIPEVIS, this.equipeVis.getId());
+            System.out.println("Crea" + ma.getEquipeDom().getId());
+            values.put(ATTR_EQUIPEDOM, ma.getEquipeDom().getId());
+            values.put(ATTR_EQUIPEVIS, ma.getEquipeVis().getId());
             values.put(ATTR_SCOREDOM, ma.getScoreDom());
             values.put(ATTR_SCOREVIS, ma.getScoreVis());
             values.put(ATTR_DATETIME, ma.getDatetime());
             values.put(ATTR_ARBITRE, ma.getArbitre());
-            values.put(ATTR_IDJOURNEE, this.idjournee.getId());
-            return bdd.update(TABLE_NAME, values, ATTR_ID + " = " +id, null);
+            values.put(ATTR_IDJOURNEE, ma.getIdjournee().getId());
+            return Global.bdd.update(TABLE_NAME, values, ATTR_ID + " = " +ma.getId(), null);
         }
+
+
         //DELETE
         public int deleteMatch(int id)
         {
-            return bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
+            return Global.bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
 
         }
 
         //RETRIEVE WITH ID
-        public Matchs retrieveMatch(int id)
+        public void retrieveMatch(int id)
         {
 
-            Cursor cursor = bdd.query(TABLE_NAME,attributs,ATTR_ID + "= ",
-                    new String[]{String.valueOf(id)},null,null, null, null);
-            if (cursor != null)
-                cursor.moveToFirst();
-            Equipe eq1 = new Equipe();
-            Equipe eq2 = new Equipe();
-            Journee jr = new Journee();
-            jr.retrieve(cursor.getInt(1));
-            eq1.retrieveEquipe(cursor.getInt(1));
-            eq2.retrieveEquipe(cursor.getInt(2));
-            Matchs ma = new Matchs(
-                    cursor.getInt(0),
-                    eq1,
-                    eq2,
-                    cursor.getInt(3),
-                    cursor.getInt(4),
-                    cursor.getString(5),
-                    cursor.getString(6),
-                    jr
-            );
+            Cursor cursor = Global.bdd.query(TABLE_NAME,attributs,ATTR_ID + " = " + id ,null,null,null, null, null);
+            cursor.moveToNext();
 
+                this.id          =      cursor.getInt(0);
+                Equipe eq1 = new Equipe();
+                Equipe eq2 = new Equipe();
+               eq1.retrieveEquipe(cursor.getInt(1));
+               eq2.retrieveEquipe(cursor.getInt(2));
+                this.equipeDom = eq1;
+                this.equipeVis = eq2;
+                this.scoreDom    =      cursor.getInt(3);
+                this.scoreVis    =      cursor.getInt(4);
+                this.datetime    =      cursor.getString(5);
+                this.arbitre     =      cursor.getString(6);
+                Journee jr = new Journee();
+                jr.retrieve(cursor.getInt(7));
+                this.idjournee = jr;
+            System.out.println("CursorJour: " + cursor.getInt(7));
+            System.out.println("CursorEq1: " + cursor.getInt(1));
+            System.out.println("CursorEq2: " + cursor.getInt(2));
 
-            return  ma;
 
         }
+
         //FIND ALL
         public List<Matchs> getAllMatchs()
         {
             List<Matchs> listMatchs = new ArrayList<Matchs>();
-
-            Cursor cursor = bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
-
+            Cursor cursor = Global.bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
             if (cursor.moveToFirst()) {
                 do {
-                    System.out.println(cursor.getInt(0));
-                   Matchs maFindAll = new Matchs();
-                   /*  Equipe eq1 = new Equipe();
+                    Matchs maFindAll = new Matchs();
+                    Equipe eq1 = new Equipe();
+                    eq1.retrieveEquipe(cursor.getInt(1));
                     Equipe eq2 = new Equipe();
+                    eq2.retrieveEquipe(cursor.getInt(2));
                     Journee jr = new Journee();
+                    jr.retrieve(cursor.getInt(7));
 
-
+                    maFindAll.setId(cursor.getInt(0));
                     maFindAll.setEquipeDom(eq1);
                     maFindAll.setEquipeVis(eq2);
-                    maFindAll.setIdjournee(jr);
-
-
-                    maFindAll.setEquipeDom(eq1.retrieveEquipe(cursor.getInt(1)));
-                    maFindAll.setEquipeVis(eq2.retrieveEquipe(cursor.getInt(2)));
                     maFindAll.setScoreDom(cursor.getInt(3));
                     maFindAll.setScoreVis(cursor.getInt(4));
                     maFindAll.setDatetime(cursor.getString(5));
-
-                    jr.retrieve(cursor.getInt(7));*/
-                    maFindAll.setId(cursor.getInt(0));
-                    maFindAll.setId(cursor.getInt(1));
                     maFindAll.setArbitre(cursor.getString(6));
-
+                    maFindAll.setIdjournee(jr);
                     listMatchs.add(maFindAll);
 
                 } while (cursor.moveToNext());
             }
-
             return listMatchs;
         }
-
-
-
 }
