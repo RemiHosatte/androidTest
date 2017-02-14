@@ -1,17 +1,13 @@
 package com.example.pc.testandroid;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by PC on 03/02/2017.
+ * Cr   eated by PC on 03/02/2017.
  */
 
 public class Journee {

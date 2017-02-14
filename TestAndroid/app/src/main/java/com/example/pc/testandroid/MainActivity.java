@@ -1,23 +1,22 @@
 package com.example.pc.testandroid;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v4.view.accessibility.AccessibilityManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
-import java.sql.SQLOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    ListView maListView;
     private Button addBouton;
     private EditText text;
     private int numero = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +35,16 @@ public class MainActivity extends AppCompatActivity {
 
         MyBaseSQLite maBaseSQLite = new MyBaseSQLite(getBaseContext());
         Global.bdd = maBaseSQLite.getWritableDatabase();
+
+        maListView = (ListView) findViewById(R.id.listViewMatchsCalendrier);
+        List<Equipe> mesEquipes = new ArrayList<Equipe>();
+        mesEquipes.add(new Equipe(1,"Clermont","","Mr M",25,25,"Test"));
+        List<Equipe> equipes =  mesEquipes;
+        ListMatchCalendrierAdapter adapter = new ListMatchCalendrierAdapter(MainActivity.this, equipes);
+        maListView.setAdapter(adapter);
         //___________JOURNEE___________
-     /*   //INSERT
-        Journee jour = new Journee(1,1);
+       //INSERT
+     /*   Journee jour = new Journee(1,1);
         jour.insertJournee(jour);
 
         //RETRIEVE
@@ -76,9 +82,8 @@ public class MainActivity extends AppCompatActivity {
             // Writing Contacts to log
             Log.d("List: ", log);
         }
-        */
         //___________EQUIPE___________
-      /*   //INSERT
+       //INSERT
       Equipe eq = new Equipe(1,"PSR", "/logo/asm.jpg", "Mr M", 45,5, "Terrain 1");
         eq.insertEquipe(eq);
   Equipe eq2 = new Equipe(1,"ASM", "/logo/asm.jpg", "Mr P", 25,1, "Terrain 2");
@@ -121,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         eqDE.deleteEquipe(12);
 
         //FIND ALL
-        */Log.d("Reading: ", "Reading all ..");
+       Log.d("Reading: ", "Reading all ..");
         Equipe eqF = new Equipe();
         List<Equipe> equipes2 = eqF.getAllEquipe();
 
@@ -169,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
        //UPDATE
 
-        monEquipe1.retrieveEquipe(EquipeRecup1);
+               monEquipe1.retrieveEquipe(EquipeRecup1);
         monEquipe2.retrieveEquipe(EquipeRecup2);
         maJournee.retrieve(JourneeRecup);
         Matchs maUp = new Matchs(1,monEquipe1,monEquipe2,78,12,"05/05/2017","New",maJournee);
@@ -196,12 +201,59 @@ public class MainActivity extends AppCompatActivity {
             Log.d("List: ", log);
         }
 
-       //DELETE
-        Equipe eqDE = new Equipe();
-        eqDE.deleteEquipe(12);
 
+*/
 
+        //___________joueurs___________
 
-        //___________MATCHS___________
+      /*  Equipe monEquipe = new Equipe();
+        int EquipeRecup = 6;
+        monEquipe.retrieveEquipe(EquipeRecup);
+        Joueur jo = new Joueur(1,"J.Mackintosh",25,"1",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(2,"Q.Lespiaucq",31 ,"2",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(3,"M.Hamadache",27,"3",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(4,"F.Metz",35,"4",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(5,"M.Tutaia",32,"5",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(6,"B.Mowen",28,"6",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(7,"S.Armitage",27,"7",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(8,"S.Dougall",24,"8",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(9,"C.Slade",23,"9",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(10,"J.Tornas",25,"10",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(11,"M.Ratuvou",24,"11",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(12,"W.Votu",35,"12",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(13,"J.Fumat",28,"13",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(14,"L.Dupichot",24,"14",monEquipe);
+        jo.insertJoueur(jo);
+        jo = new Joueur(15,"C.Malié",29,"15",monEquipe);
+        jo.insertJoueur(jo);
+
+        Log.d("Reading: ", "Reading all ..");
+        Joueur joF = new Joueur();
+        List<Joueur> jo1 = joF.getAllJoueurs();
+
+        for (Joueur joueur : jo1) {
+            String log = "Id: "+joueur.getId()+
+                    ",: " + joueur.getId() +
+                    ",: " + joueur.getNom() +
+                    ",: " + joueur.getAge() +
+                    ",: " + joueur.getPoste() +
+                    ",: " + joueur.getEquipeID().getNom()
+                    ;
+            // Writing Contacts to log
+            Log.d("List: ", log);
+        }*/
     }
 }

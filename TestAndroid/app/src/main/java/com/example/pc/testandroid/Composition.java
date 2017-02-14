@@ -110,63 +110,47 @@ public class Composition {
     /*
     A FINIR
      */
+
     public int updateComposition(Composition co){
         ContentValues values = new ContentValues();
         values.put(ATTR_IDMATCH, co.getIdmatch().getId());
         values.put(ATTR_IDJOUEUR, co.getIdjoueur().getId());
         values.put(ATTR_NUMEROJOUEUR, co.getNumeroJoueur());
         values.put(ATTR_ETAT, co.getEtat());
-        return Global.bdd.update(TABLE_NAME, values, ATTR_IDJOUEUR + " = " + co.getId(), null);
+        return Global.bdd.update(TABLE_NAME, values, ATTR_IDMATCH + " = " + co.getIdmatch() +" AND " + ATTR_IDJOUEUR + " = " + co.getIdjoueur(), null);
     }
-
-
     //DELETE
-    public int deleteJoueur(int id)
+    public int deleteComposition(int id)
     {
-        return Global.bdd.delete(TABLE_NAME, ATTR_ID + " = " +id, null);
+        return Global.bdd.delete(TABLE_NAME, ATTR_IDMATCH + " = " + id, null);
 
     }
 
-    //RETRIEVE WITH ID
-    public void retrieveJoueur(int id)
+    public List<Composition> getCompositionMatch(int id)
     {
+        List<Composition> listCompoMatch = new ArrayList<Composition>();
 
-        Cursor cursor = Global.bdd.query(TABLE_NAME,attributs,ATTR_ID + " = " + id ,null,null,null, null, null);
-        cursor.moveToNext();
+        Cursor cursor = Global.bdd.query(TABLE_NAME, attributs, ATTR_IDMATCH + " = " + id , null, null, null, null);
 
-        this.id = cursor.getInt(0);
-        this.nom = cursor.getString(1);
-        this.age = cursor.getInt(2);
-        this.poste = cursor.getString(3);
-        Equipe eq = new Equipe();
-        eq.retrieveEquipe(cursor.getInt(4));
-        this.equipeID = eq;
-
-
-    }
-
-    //FIND ALL
-    public List<Joueur> getAllJoueurs()
-    {
-        List<Joueur> listJoueurs = new ArrayList<Joueur>();
-        Cursor cursor = Global.bdd.query(TABLE_NAME, attributs, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             do {
-                Joueur joFindAll = new Joueur();
-                Equipe eq = new Equipe();
-                eq.retrieveEquipe(cursor.getInt(4));
+                Composition coFindAll = new Composition();
 
+                Matchs ma = new Matchs();
+                Joueur jo = new Joueur();
 
-                joFindAll.setId(cursor.getInt(0));
-                joFindAll.setNom(cursor.getString(1));
-                joFindAll.setAge(cursor.getInt(2));
-                joFindAll.setPoste(cursor.getString(3));
-                joFindAll.setEquipeID(eq);
+                ma.retrieveMatch(cursor.getInt(0));
+                jo.retrieveJoueur(cursor.getInt(1));
 
-                listJoueurs.add(joFindAll);
+                coFindAll.setIdmatch(ma);
+                coFindAll.setIdjoueur(jo);
+                coFindAll.setNumeroJoueur(cursor.getInt(2));
+                coFindAll.setEtat(cursor.getInt(3));
+
+                listCompoMatch.add(coFindAll);
 
             } while (cursor.moveToNext());
         }
-        return listJoueurs;
+        return listCompoMatch;
     }
 }
